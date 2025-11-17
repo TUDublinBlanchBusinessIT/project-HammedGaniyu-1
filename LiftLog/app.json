@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "LogLift",
-    "slug": "LogLift",
+    "name": "LiftLog",
+    "slug": "LiftLog",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

@@ -5,12 +5,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Your Firebase config
 const firebaseConfig = {
-  apiKey: "YOUR KEY HERE",
-  authDomain: "YOUR KEY HERE",
-  projectId: "YOUR KEY HERE",
-  storageBucket: "YOUR KEY HERE",
-  messagingSenderId: "YOUR KEY HERE",
-  appId: "YOUR KEY HERE",
+  apiKey: "AIzaSyBAV0ZixrUBFGvqOzIrmTrFCrJTsH-kTjk",
+  authDomain: "liftlog-dd0d7.firebaseapp.com",
+  projectId: "liftlog-dd0d7",
+  storageBucket: "liftlog-dd0d7.firebasestorage.app",
+  messagingSenderId: "1036967072404",
+  appId: "1:1036967072404:web:b351c3e26ac6633da71a81",
 };
 
 // Initialize Firebase

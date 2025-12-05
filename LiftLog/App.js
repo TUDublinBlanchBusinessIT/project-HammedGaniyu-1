@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './pages/LoginScreen';
 import SignupScreen from './pages/SignupScreen';
 import HomeScreen from './pages/HomeScreen';
+import AddWorkoutScreen from './pages/AddWorkoutScreen';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,9 @@ export default function App() {
           component={HomeScreen} 
           options={{ headerTitle: 'LiftLog Home' }}
         />
+
+        <Stack.Screen name="AddWorkout" component={AddWorkoutScreen} />
+
 
       </Stack.Navigator>
     </NavigationContainer>

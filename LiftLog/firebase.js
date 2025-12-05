@@ -1,9 +1,9 @@
-// Import the functions you need from Firebase SDKs
+
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Your Firebase config
+
 const firebaseConfig = {
   apiKey: "AIzaSyBAV0ZixrUBFGvqOzIrmTrFCrJTsH-kTjk",
   authDomain: "liftlog-dd0d7.firebaseapp.com",

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { db, auth } from '../firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 
@@ -28,7 +28,7 @@ export default function AddWorkoutScreen({ navigation }) {
         date: Timestamp.now()
       });
 
-      setMessage("Workout saved successfully! Returning to Home...");
+      setMessage("Workout saved successfully!");
 
       setTimeout(() => {
         navigation.navigate("Home");
@@ -40,7 +40,7 @@ export default function AddWorkoutScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
       <Text style={styles.title}>Add Workout</Text>
 
       {message !== "" && (
@@ -52,6 +52,7 @@ export default function AddWorkoutScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Exercise Name (e.g. Bench Press)"
+        placeholderTextColor="#777"
         value={exercise}
         onChangeText={setExercise}
       />
@@ -59,6 +60,7 @@ export default function AddWorkoutScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Weight (kg)"
+        placeholderTextColor="#777"
         value={weight}
         onChangeText={setWeight}
         keyboardType="numeric"
@@ -67,14 +69,16 @@ export default function AddWorkoutScreen({ navigation }) {
       <TextInput
         style={styles.input}
         placeholder="Sets (e.g. 4)"
+        placeholderTextColor="#777"
         value={sets}
-        onChangeText={setSets}
+        onChangeChangeText={setSets}
         keyboardType="numeric"
       />
 
       <TextInput
         style={styles.input}
         placeholder="Reps per Set (e.g. 8)"
+        placeholderTextColor="#777"
         value={reps}
         onChangeText={setReps}
         keyboardType="numeric"
@@ -87,27 +91,63 @@ export default function AddWorkoutScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate("Home")}>
         <Text style={styles.backText}>Back to Home</Text>
       </TouchableOpacity>
-    </View>
+
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 40 },
-  input: { width: '100%', padding: 15, borderWidth: 1, borderRadius: 10, marginBottom: 20 },
-  button: { backgroundColor: '#007AFF', padding: 15, borderRadius: 10, width: '100%', alignItems: 'center' },
-  buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
-  backText: { marginTop: 20, color: '#007AFF', fontSize: 16 },
-
+  container: { 
+    flex: 1, 
+    backgroundColor: "#0D0D0D",
+    padding: 20 
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+    marginBottom: 30,
+    textAlign: "center"
+  },
+  input: {
+    width: "100%",
+    padding: 15,
+    backgroundColor: "#1A1A1A",
+    borderRadius: 10,
+    marginBottom: 20,
+    color: "#FFF",
+    borderWidth: 1,
+    borderColor: "#333",
+  },
+  button: {
+    backgroundColor: "#E10600",
+    padding: 18,
+    borderRadius: 12,
+    width: "100%",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  backText: {
+    marginTop: 20,
+    color: "#FF453A",
+    textAlign: "center",
+    fontSize: 16,
+  },
   messageBox: {
-    backgroundColor: "#d1ffd6",
-    padding: 10,
+    backgroundColor: "#122917",
+    borderColor: "#4CD964",
+    borderWidth: 1,
+    padding: 12,
     borderRadius: 8,
     marginBottom: 20,
-    width: "100%",
   },
   messageText: {
-    color: "#007A0A",
+    color: "#4CD964",
     textAlign: "center",
     fontWeight: "bold",
   },

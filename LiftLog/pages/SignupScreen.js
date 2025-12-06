@@ -1,117 +1,128 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import AnimatedFade from '../components/AnimatedFade';
+import { colors, spacing, fonts, common } from '../theme';
 
 export default function SignupScreen({ navigation }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState("");
 
   const handleSignup = async () => {
     if (!name || !email || !password) {
-      Alert.alert("Missing Information", "Please fill in all fields.");
+      setMessage("Please fill in all fields.");
       return;
     }
 
     try {
-      // Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
 
-      // Save user name + email in Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        name: name,
-        email: email
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        name,
+        email,
       });
 
-      Alert.alert(
-        "Account Created",
-        "Your account was created successfully.",
-        [
-          { text: "OK", onPress: () => navigation.navigate("Login") }
-        ]
-      );
+      setMessage("Account created successfully!");
+
+      setTimeout(() => navigation.navigate("Login"), 900);
 
     } catch (error) {
-      Alert.alert("Signup Error", error.message);
+      setMessage("Signup Error: " + error.message);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Create Account</Text>
+    <View style={common.screenContainer}>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Your Name"
-        placeholderTextColor="#777"
-        value={name}
-        onChangeText={setName}
-      />
+      <AnimatedFade delay={100}>
+        <Text style={styles.title}>Create Account</Text>
+      </AnimatedFade>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#777"
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
+      {message !== "" && (
+        <AnimatedFade delay={200}>
+          <View style={styles.messageBox}>
+            <Text style={styles.messageText}>{message}</Text>
+          </View>
+        </AnimatedFade>
+      )}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#777"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+      <AnimatedFade delay={300}>
+        <TextInput
+          style={common.input}
+          placeholder="Full Name"
+          placeholderTextColor={colors.textDarkMuted}
+          value={name}
+          onChangeText={setName}
+        />
+      </AnimatedFade>
 
-      <TouchableOpacity style={styles.button} onPress={handleSignup}>
-        <Text style={styles.buttonText}>Sign Up</Text>
-      </TouchableOpacity>
+      <AnimatedFade delay={400}>
+        <TextInput
+          style={common.input}
+          placeholder="Email"
+          placeholderTextColor={colors.textDarkMuted}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+        />
+      </AnimatedFade>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text style={styles.switchText}>Already have an account? Login</Text>
-      </TouchableOpacity>
+      <AnimatedFade delay={500}>
+        <TextInput
+          style={common.input}
+          placeholder="Password"
+          placeholderTextColor={colors.textDarkMuted}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </AnimatedFade>
+
+      <AnimatedFade delay={600}>
+        <TouchableOpacity style={common.primaryButton} onPress={handleSignup}>
+          <Text style={common.primaryButtonText}>Sign Up</Text>
+        </TouchableOpacity>
+      </AnimatedFade>
+
+      <AnimatedFade delay={700}>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.switch}>Already have an account? Login</Text>
+        </TouchableOpacity>
+      </AnimatedFade>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    justifyContent: "center", 
-    alignItems: "center", 
-    padding: 20,
-    backgroundColor: "#0D0D0D"
+  title: {
+    color: colors.textLight,
+    fontSize: fonts.h1,
+    fontWeight: "bold",
+    marginBottom: spacing.xl,
   },
-  title: { 
-    fontSize: 28, 
-    fontWeight: "bold", 
-    marginBottom: 40, 
-    color: "#FFF" 
+  switch: {
+    color: colors.accent,
+    marginTop: spacing.lg,
+    fontSize: fonts.body,
+    textAlign: "center",
   },
-  input: { 
-    width: "100%", 
-    padding: 15, 
-    borderWidth: 1, 
-    borderColor: "#333", 
-    borderRadius: 10, 
-    marginBottom: 20,
-    color: "#FFF",
-    backgroundColor: "#1A1A1A"
+  messageBox: {
+    backgroundColor: "#221111",
+    borderLeftWidth: 3,
+    borderColor: colors.primary,
+    padding: spacing.sm,
+    width: "100%",
+    borderRadius: 8,
+    marginBottom: spacing.md,
   },
-  button: { 
-    backgroundColor: "#E10600", 
-    padding: 15, 
-    borderRadius: 10, 
-    width: "100%", 
-    alignItems: "center" 
+  messageText: {
+    color: colors.accent,
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  buttonText: { color: "white", fontWeight: "bold", fontSize: 16 },
-  switchText: { marginTop: 20, color: "#FF453A" },
 });

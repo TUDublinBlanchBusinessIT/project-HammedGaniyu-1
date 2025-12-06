@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { db, auth } from '../firebase';
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { db, auth } from "../firebase";
+import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
+import { colors, spacing, fonts } from "../theme";
 
 export default function HistoryScreen() {
   const [workouts, setWorkouts] = useState([]);
@@ -16,11 +17,7 @@ export default function HistoryScreen() {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const logs = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setWorkouts(logs);
+      setWorkouts(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
     });
 
     return unsubscribe;
@@ -31,7 +28,7 @@ export default function HistoryScreen() {
       <Text style={styles.title}>Workout History</Text>
 
       {workouts.length === 0 && (
-        <Text style={styles.emptyText}>No workouts logged yet.</Text>
+        <Text style={styles.empty}>No workouts logged yet.</Text>
       )}
 
       {workouts.map((item) => (
@@ -41,62 +38,59 @@ export default function HistoryScreen() {
             {item.weight} kg · {item.sets} sets × {item.reps} reps
           </Text>
           <Text style={styles.date}>
-            {item.date.toDate().toLocaleDateString()} — {item.date.toDate().toLocaleTimeString()}
+            {item.date.toDate().toLocaleString()}
           </Text>
         </View>
       ))}
 
-      <View style={{ height: 50 }} />
+      <View style={{ height: 40 }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#0D0D0D",
-    padding: 20,
+    backgroundColor: colors.background,
+    padding: spacing.lg,
     flex: 1,
   },
   title: {
-    fontSize: 30,
-    color: "#FFF",
+    fontSize: fonts.h1,
     fontWeight: "bold",
-    marginBottom: 20,
+    color: colors.textLight,
     textAlign: "center",
+    marginBottom: spacing.lg,
   },
-  emptyText: {
-    color: "#888",
+  empty: {
+    color: colors.textMuted,
     textAlign: "center",
-    marginTop: 30,
-    fontSize: 16,
+    marginTop: spacing.xl,
+    fontSize: fonts.body,
   },
   card: {
-    backgroundColor: "#1A1A1A",
-    padding: 20,
+    backgroundColor: colors.card,
+    padding: spacing.lg,
     borderRadius: 12,
-    marginBottom: 20,
+    marginBottom: spacing.md,
     borderWidth: 1,
-    borderColor: "#330000",
-    shadowColor: "#E10600",
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 10,
-    elevation: 8,
+    borderColor: colors.primaryDark,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 4,
   },
   exercise: {
-    color: "#FFF",
-    fontSize: 22,
+    color: colors.textLight,
+    fontSize: fonts.h2,
     fontWeight: "bold",
-    marginBottom: 5,
   },
   details: {
-    color: "#FF453A",
-    fontSize: 16,
-    marginBottom: 8,
-    fontWeight: "600",
+    color: colors.accent,
+    fontSize: fonts.h3,
+    marginTop: spacing.xs,
   },
   date: {
-    color: "#BBB",
-    fontSize: 14,
+    color: colors.textMuted,
+    marginTop: spacing.sm,
   },
 });

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+import AnimatedFade from "../components/AnimatedFade";
+import { colors, spacing, fonts, common } from "../theme";
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -15,119 +17,102 @@ export default function LoginScreen({ navigation }) {
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      setMessage("Login successful! Redirecting...");
+      await signInWithEmailAndPassword(auth, email, password);
+      setMessage("Login successful!");
 
-      setTimeout(() => {
-        navigation.navigate("Home");
-      }, 1200);
-
+      setTimeout(() => navigation.navigate("Home"), 800);
     } catch (error) {
       setMessage("Login Error: " + error.message);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>LiftLog</Text>
-      <Text style={styles.subtitle}>Welcome Back</Text>
+    <View style={common.screenContainer}>
+      
+      <AnimatedFade delay={100}>
+        <Text style={styles.title}>LiftLog</Text>
+      </AnimatedFade>
+
+      <AnimatedFade delay={200}>
+        <Text style={styles.subtitle}>Welcome Back</Text>
+      </AnimatedFade>
 
       {message !== "" && (
-        <View style={styles.messageBox}>
-          <Text style={styles.messageText}>{message}</Text>
-        </View>
+        <AnimatedFade delay={300}>
+          <View style={styles.messageBox}>
+            <Text style={styles.messageText}>{message}</Text>
+          </View>
+        </AnimatedFade>
       )}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#777"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
+      <AnimatedFade delay={400}>
+        <TextInput
+          style={common.input}
+          placeholder="Email"
+          placeholderTextColor={colors.textDarkMuted}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+        />
+      </AnimatedFade>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#777"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+      <AnimatedFade delay={500}>
+        <TextInput
+          style={common.input}
+          placeholder="Password"
+          placeholderTextColor={colors.textDarkMuted}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+      </AnimatedFade>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+      <AnimatedFade delay={600}>
+        <TouchableOpacity style={common.primaryButton} onPress={handleLogin}>
+          <Text style={common.primaryButtonText}>Login</Text>
+        </TouchableOpacity>
+      </AnimatedFade>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-        <Text style={styles.switchText}>Don't have an account? Sign Up</Text>
-      </TouchableOpacity>
+      <AnimatedFade delay={700}>
+        <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+          <Text style={styles.switch}>Don't have an account? Sign Up</Text>
+        </TouchableOpacity>
+      </AnimatedFade>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#0D0D0D",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20
-  },
   title: {
-    color: "#FFF",
-    fontSize: 42,
+    fontSize: fonts.h1,
     fontWeight: "bold",
-    marginBottom: 5,
+    color: colors.textLight,
+    marginBottom: spacing.sm,
   },
   subtitle: {
-    color: "#B3B3B3",
-    fontSize: 18,
-    marginBottom: 40,
+    fontSize: fonts.h3,
+    color: colors.textMuted,
+    marginBottom: spacing.xl,
   },
-  input: {
-    width: "100%",
-    backgroundColor: "#1A1A1A",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#333",
-    padding: 15,
-    marginBottom: 20,
-    color: "#FFF",
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: "#E10600",
-    width: "100%",
-    padding: 15,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  switchText: {
-    color: "#FF453A",
-    marginTop: 25,
-    fontSize: 15,
+  switch: {
+    color: colors.accent,
+    marginTop: spacing.lg,
+    fontSize: fonts.body,
+    textAlign: "center",
   },
   messageBox: {
     backgroundColor: "#221111",
-    padding: 12,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#FF0000",
-    marginBottom: 20,
+    borderLeftWidth: 3,
+    borderColor: colors.primary,
+    padding: spacing.sm,
     width: "100%",
+    borderRadius: 8,
+    marginBottom: spacing.md,
   },
   messageText: {
-    color: "#FF453A",
-    textAlign: "center",
+    color: colors.accent,
     fontWeight: "bold",
+    textAlign: "center",
   },
 });

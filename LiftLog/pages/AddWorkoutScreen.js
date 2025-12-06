@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { db, auth } from '../firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import AnimatedFade from '../components/AnimatedFade';
+import { colors, spacing, fonts, common } from '../theme';
 
 export default function AddWorkoutScreen({ navigation }) {
   const [exercise, setExercise] = useState('');
@@ -12,7 +14,7 @@ export default function AddWorkoutScreen({ navigation }) {
 
   const handleSave = async () => {
     if (!exercise || !weight || !sets || !reps) {
-      setMessage("Please fill in all fields.");
+      setMessage("Please fill all fields.");
       return;
     }
 
@@ -25,126 +27,105 @@ export default function AddWorkoutScreen({ navigation }) {
         weight,
         sets,
         reps,
-        date: Timestamp.now()
+        date: Timestamp.now(),
       });
 
-      setMessage("Workout saved successfully!");
-
-      setTimeout(() => {
-        navigation.navigate("Home");
-      }, 1500);
+      setMessage("Workout saved!");
+      setTimeout(() => navigation.navigate("Home"), 900);
 
     } catch (error) {
-      setMessage("Error saving workout: " + error.message);
+      setMessage("Error: " + error.message);
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 30 }}>
-      <Text style={styles.title}>Add Workout</Text>
+    <ScrollView style={styles.container}>
+
+      <AnimatedFade delay={100}>
+        <Text style={styles.title}>Add Workout</Text>
+      </AnimatedFade>
 
       {message !== "" && (
-        <View style={styles.messageBox}>
-          <Text style={styles.messageText}>{message}</Text>
-        </View>
+        <AnimatedFade delay={200}>
+          <View style={styles.messageBox}>
+            <Text style={styles.messageText}>{message}</Text>
+          </View>
+        </AnimatedFade>
       )}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Exercise Name (e.g. Bench Press)"
-        placeholderTextColor="#777"
-        value={exercise}
-        onChangeText={setExercise}
-      />
+      <AnimatedFade delay={300}>
+        <TextInput
+          style={common.input}
+          placeholder="Exercise"
+          placeholderTextColor={colors.textDarkMuted}
+          value={exercise}
+          onChangeText={setExercise}
+        />
+      </AnimatedFade>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Weight (kg)"
-        placeholderTextColor="#777"
-        value={weight}
-        onChangeText={setWeight}
-        keyboardType="numeric"
-      />
+      <AnimatedFade delay={400}>
+        <TextInput
+          style={common.input}
+          placeholder="Weight (kg)"
+          placeholderTextColor={colors.textDarkMuted}
+          value={weight}
+          onChangeText={setWeight}
+          keyboardType="numeric"
+        />
+      </AnimatedFade>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Sets (e.g. 4)"
-        placeholderTextColor="#777"
-        value={sets}
-        onChangeChangeText={setSets}
-        keyboardType="numeric"
-      />
+      <AnimatedFade delay={500}>
+        <TextInput
+          style={common.input}
+          placeholder="Sets"
+          placeholderTextColor={colors.textDarkMuted}
+          value={sets}
+          onChangeText={setSets}
+          keyboardType="numeric"
+        />
+      </AnimatedFade>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Reps per Set (e.g. 8)"
-        placeholderTextColor="#777"
-        value={reps}
-        onChangeText={setReps}
-        keyboardType="numeric"
-      />
+      <AnimatedFade delay={600}>
+        <TextInput
+          style={common.input}
+          placeholder="Reps"
+          placeholderTextColor={colors.textDarkMuted}
+          value={reps}
+          onChangeText={setReps}
+          keyboardType="numeric"
+        />
+      </AnimatedFade>
 
-      <TouchableOpacity style={styles.button} onPress={handleSave}>
-        <Text style={styles.buttonText}>Save Workout</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-        <Text style={styles.backText}>Back to Home</Text>
-      </TouchableOpacity>
+      <AnimatedFade delay={700}>
+        <TouchableOpacity style={common.primaryButton} onPress={handleSave}>
+          <Text style={common.primaryButtonText}>Save Workout</Text>
+        </TouchableOpacity>
+      </AnimatedFade>
 
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: "#0D0D0D",
-    padding: 20 
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    padding: spacing.lg,
   },
   title: {
-    fontSize: 32,
+    fontSize: fonts.h1,
     fontWeight: "bold",
-    color: "#FFFFFF",
-    marginBottom: 30,
-    textAlign: "center"
-  },
-  input: {
-    width: "100%",
-    padding: 15,
-    backgroundColor: "#1A1A1A",
-    borderRadius: 10,
-    marginBottom: 20,
-    color: "#FFF",
-    borderWidth: 1,
-    borderColor: "#333",
-  },
-  button: {
-    backgroundColor: "#E10600",
-    padding: 18,
-    borderRadius: 12,
-    width: "100%",
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonText: {
-    color: "#FFF",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  backText: {
-    marginTop: 20,
-    color: "#FF453A",
+    color: colors.textLight,
     textAlign: "center",
-    fontSize: 16,
+    marginBottom: spacing.xl,
   },
   messageBox: {
     backgroundColor: "#122917",
     borderColor: "#4CD964",
     borderWidth: 1,
-    padding: 12,
+    padding: spacing.sm,
     borderRadius: 8,
-    marginBottom: 20,
+    marginBottom: spacing.md,
   },
   messageText: {
     color: "#4CD964",

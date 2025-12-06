@@ -6,11 +6,12 @@ import { collection, addDoc, Timestamp } from 'firebase/firestore';
 export default function AddWorkoutScreen({ navigation }) {
   const [exercise, setExercise] = useState('');
   const [weight, setWeight] = useState('');
+  const [sets, setSets] = useState('');
   const [reps, setReps] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSave = async () => {
-    if (!exercise || !weight || !reps) {
+    if (!exercise || !weight || !sets || !reps) {
       setMessage("Please fill in all fields.");
       return;
     }
@@ -22,11 +23,12 @@ export default function AddWorkoutScreen({ navigation }) {
         userId: user.uid,
         exercise,
         weight,
+        sets,
         reps,
         date: Timestamp.now()
       });
 
-      setMessage("Workout saved! Redirecting...");
+      setMessage("Workout saved successfully! Returning to Home...");
 
       setTimeout(() => {
         navigation.navigate("Home");
@@ -64,7 +66,15 @@ export default function AddWorkoutScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Reps"
+        placeholder="Sets (e.g. 4)"
+        value={sets}
+        onChangeText={setSets}
+        keyboardType="numeric"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Reps per Set (e.g. 8)"
         value={reps}
         onChangeText={setReps}
         keyboardType="numeric"
@@ -88,6 +98,7 @@ const styles = StyleSheet.create({
   button: { backgroundColor: '#007AFF', padding: 15, borderRadius: 10, width: '100%', alignItems: 'center' },
   buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
   backText: { marginTop: 20, color: '#007AFF', fontSize: 16 },
+
   messageBox: {
     backgroundColor: "#d1ffd6",
     padding: 10,

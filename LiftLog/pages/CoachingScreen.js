@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import AnimatedFade from "../components/AnimatedFade";
 import { colors, spacing, fonts, common } from "../theme";
 import { auth, db } from "../firebase";
@@ -41,7 +47,7 @@ export default function CoachingScreen() {
   }));
 
   const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
+    setDropdownOpen((open) => !open);
     dropdownHeight.value = withTiming(dropdownOpen ? 0 : 150, { duration: 250 });
   };
 
@@ -99,7 +105,7 @@ export default function CoachingScreen() {
       `Least trained: ${weakest}`,
       sorted.length > 2
         ? "Training balance improving."
-        : "Try adding more variety.",
+        : "Try adding more variety"
     ]);
   };
 
@@ -136,93 +142,113 @@ export default function CoachingScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <AnimatedFade delay={100}>
-        <Text style={styles.title}>Coaching</Text>
-      </AnimatedFade>
+    <View style={styles.screen}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={true} // show the scrollbar clearly
+      >
+        <AnimatedFade delay={100}>
+          <Text style={styles.title}>Coaching</Text>
+        </AnimatedFade>
 
-      {/* Goal Selector */}
-      <AnimatedFade delay={200}>
-        <Text style={styles.label}>Select your goal</Text>
+        {/* Goal Selector */}
+        <AnimatedFade delay={200}>
+          <Text style={styles.label}>Select your goal</Text>
 
-        <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
-          <Text style={styles.dropdownText}>{goal}</Text>
-          <Text style={styles.dropdownArrow}>{dropdownOpen ? "▲" : "▼"}</Text>
-        </TouchableOpacity>
-
-        <Animated.View style={[styles.dropdownOptions, animatedDropdownStyle]}>
-          {["Strength", "Muscle Gain", "Fat Loss", "Beginner"].map((g) => (
-            <TouchableOpacity
-              key={g}
-              style={styles.option}
-              onPress={() => {
-                setGoal(g);
-                toggleDropdown();
-              }}
-            >
-              <Text style={styles.optionText}>{g}</Text>
-            </TouchableOpacity>
-          ))}
-        </Animated.View>
-      </AnimatedFade>
-
-      {/* Recent Trends */}
-      <AnimatedFade delay={300}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Recent Trends</Text>
-          {insights.map((i, idx) => (
-            <Text key={idx} style={styles.cardText}>
-              • {i}
+          <TouchableOpacity style={styles.dropdown} onPress={toggleDropdown}>
+            <Text style={styles.dropdownText}>{goal}</Text>
+            <Text style={styles.dropdownArrow}>
+              {dropdownOpen ? "▲" : "▼"}
             </Text>
-          ))}
-        </View>
-      </AnimatedFade>
+          </TouchableOpacity>
 
-      {/* Today's Recommendation */}
-      <AnimatedFade delay={400}>
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Today's Recommended Workout</Text>
-          {recommendation.map((item, idx) => (
-            <Text key={idx} style={styles.cardText}>
-              • {item}
-            </Text>
-          ))}
-        </View>
-      </AnimatedFade>
+          <Animated.View
+            style={[styles.dropdownOptions, animatedDropdownStyle]}
+          >
+            {["Strength", "Muscle Gain", "Fat Loss", "Beginner"].map((g) => (
+              <TouchableOpacity
+                key={g}
+                style={styles.option}
+                onPress={() => {
+                  setGoal(g);
+                  toggleDropdown();
+                }}
+              >
+                <Text style={styles.optionText}>{g}</Text>
+              </TouchableOpacity>
+            ))}
+          </Animated.View>
+        </AnimatedFade>
 
-      {/* Full Routine */}
-      <AnimatedFade delay={500}>
-        <TouchableOpacity
-          style={styles.routineHeader}
-          onPress={() => setRoutineVisible(!routineVisible)}
-        >
-          <Text style={styles.cardTitle}>Full Suggested Routine</Text>
-          <Text style={styles.dropdownArrow}>
-            {routineVisible ? "▲" : "▼"}
-          </Text>
-        </TouchableOpacity>
-
-        {routineVisible && (
-          <View style={[styles.card, { marginTop: spacing.sm }]}>
-            <Text style={styles.cardText}>Warm-up: 5 minutes light cardio</Text>
-            <Text style={styles.cardText}>Main lifts: based on your goal</Text>
-            <Text style={styles.cardText}>Accessories: 2–3 isolation moves</Text>
-            <Text style={styles.cardText}>Cooldown: stretch & mobility</Text>
+        {/* Recent Trends */}
+        <AnimatedFade delay={300}>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Recent Trends</Text>
+            {insights.map((i, idx) => (
+              <Text key={idx} style={styles.cardText}>
+                • {i}
+              </Text>
+            ))}
           </View>
-        )}
-      </AnimatedFade>
+        </AnimatedFade>
 
-      {/* Extra bottom space so last card isn't glued to edge */}
-      <View style={{ height: spacing.xl }} />
+        {/* Today's Recommendation */}
+        <AnimatedFade delay={400}>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Today's Recommended Workout</Text>
+            {recommendation.map((item, idx) => (
+              <Text key={idx} style={styles.cardText}>
+                • {item}
+              </Text>
+            ))}
+          </View>
+        </AnimatedFade>
+
+        {/* Full Routine */}
+        <AnimatedFade delay={500}>
+          <TouchableOpacity
+            style={styles.routineHeader}
+            onPress={() => setRoutineVisible(!routineVisible)}
+          >
+            <Text style={styles.cardTitle}>Full Suggested Routine</Text>
+            <Text style={styles.dropdownArrow}>
+              {routineVisible ? "▲" : "▼"}
+            </Text>
+          </TouchableOpacity>
+
+          {routineVisible && (
+            <View style={[styles.card, { marginTop: spacing.sm }]}>
+              <Text style={styles.cardText}>
+                Warm-up: 5 minutes light cardio
+              </Text>
+              <Text style={styles.cardText}>
+                Main lifts: based on your selected goal
+              </Text>
+              <Text style={styles.cardText}>
+                Accessories: 2–3 isolation exercises
+              </Text>
+              <Text style={styles.cardText}>
+                Cooldown: light stretching and mobility
+              </Text>
+            </View>
+          )}
+        </AnimatedFade>
+
+        {/* Bottom padding so last card isn't stuck to edge */}
+        <View style={{ height: spacing.xl }} />
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  container: {
     padding: spacing.lg,
+    paddingBottom: spacing.xl * 2,
   },
   title: {
     fontSize: fonts.h1,

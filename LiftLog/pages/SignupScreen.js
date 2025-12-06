@@ -1,34 +1,41 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-
-import { auth } from '../firebase';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function SignupScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSignup = async () => {
-    if (!email || !password) {
-      setSuccessMessage("Please enter both an email and password.");
+    if (!name || !email || !password) {
+      Alert.alert("Missing Information", "Please fill in all fields.");
       return;
     }
 
     try {
+      // Create user in Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Show message on screen
-      setSuccessMessage("Your account has been created successfully. Redirecting to login...");
+      // Save user name + email in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        name: name,
+        email: email
+      });
 
-      // Redirect after 2 seconds
-      setTimeout(() => {
-        navigation.navigate('Login');
-      }, 2000);
+      Alert.alert(
+        "Account Created",
+        "Your account was created successfully.",
+        [
+          { text: "OK", onPress: () => navigation.navigate("Login") }
+        ]
+      );
 
     } catch (error) {
-      setSuccessMessage("Signup Error: " + error.message);
+      Alert.alert("Signup Error", error.message);
     }
   };
 
@@ -36,34 +43,38 @@ export default function SignupScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.title}>Create Account</Text>
 
-      {successMessage !== '' && (
-        <View style={styles.messageBox}>
-          <Text style={styles.messageText}>{successMessage}</Text>
-        </View>
-      )}
+      <TextInput
+        style={styles.input}
+        placeholder="Your Name"
+        placeholderTextColor="#777"
+        value={name}
+        onChangeText={setName}
+      />
 
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor="#777"
+        autoCapitalize="none"
+        keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
       />
 
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor="#777"
+        secureTextEntry
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
       />
 
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
         <Text style={styles.switchText}>Already have an account? Login</Text>
       </TouchableOpacity>
     </View>
@@ -71,24 +82,36 @@ export default function SignupScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 40 },
-  input: { width: '100%', padding: 15, borderWidth: 1, borderRadius: 10, marginBottom: 20 },
-  button: { backgroundColor: '#007AFF', padding: 15, borderRadius: 10, width: '100%', alignItems: 'center' },
-  buttonText: { color: 'white', fontWeight: 'bold', fontSize: 16 },
-  switchText: { marginTop: 20, color: '#007AFF' },
-
-  // NEW styles:
-  messageBox: {
-    backgroundColor: "#d1ffd6",
-    padding: 10,
-    borderRadius: 8,
+  container: { 
+    flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center", 
+    padding: 20,
+    backgroundColor: "#0D0D0D"
+  },
+  title: { 
+    fontSize: 28, 
+    fontWeight: "bold", 
+    marginBottom: 40, 
+    color: "#FFF" 
+  },
+  input: { 
+    width: "100%", 
+    padding: 15, 
+    borderWidth: 1, 
+    borderColor: "#333", 
+    borderRadius: 10, 
     marginBottom: 20,
-    width: "100%",
+    color: "#FFF",
+    backgroundColor: "#1A1A1A"
   },
-  messageText: {
-    color: "#007A0A",
-    textAlign: "center",
-    fontWeight: "bold",
+  button: { 
+    backgroundColor: "#E10600", 
+    padding: 15, 
+    borderRadius: 10, 
+    width: "100%", 
+    alignItems: "center" 
   },
+  buttonText: { color: "white", fontWeight: "bold", fontSize: 16 },
+  switchText: { marginTop: 20, color: "#FF453A" },
 });

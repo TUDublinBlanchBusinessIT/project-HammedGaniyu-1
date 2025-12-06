@@ -7,7 +7,7 @@ import SignupScreen from './pages/SignupScreen';
 import HomeScreen from './pages/HomeScreen';
 import AddWorkoutScreen from './pages/AddWorkoutScreen';
 import HistoryScreen from './pages/HistoryScreen';
-
+import CoachingScreen from './pages/CoachingScreen';
 
 const Stack = createStackNavigator();
 
@@ -44,6 +44,8 @@ export default function App() {
           component={HistoryScreen}
           options={{ headerTitle: 'History' }}
         />
+         <Stack.Screen name="Coaching" component={CoachingScreen} />
+
 
 
 

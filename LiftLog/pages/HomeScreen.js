@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import AnimatedFade from "../components/AnimatedFade";
@@ -21,46 +21,86 @@ export default function HomeScreen({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      
-      <AnimatedFade delay={100}>
-        <Text style={styles.title}>Welcome {name || "User"}</Text>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: spacing.xl }}>
+
+      {/* Welcome header */}
+      <AnimatedFade delay={80}>
+        <Text style={styles.title}>Welcome {name || "Lifter"}</Text>
       </AnimatedFade>
 
-      <AnimatedFade delay={200}>
-        <Image 
+      {/* Hero banner */}
+      <AnimatedFade delay={160}>
+        <Image
           source={require("../assets/hero_gym.jpg")}
           style={styles.heroImage}
         />
       </AnimatedFade>
 
+      {/* Subtitle */}
+      <AnimatedFade delay={230}>
+        <Text style={styles.subtitle}>Train smart. Track everything.</Text>
+      </AnimatedFade>
+
+      {/* Primary Add Workout button */}
+      <AnimatedFade delay={300}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate("AddWorkout")}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.primaryButtonText}>Add Workout</Text>
+        </TouchableOpacity>
+      </AnimatedFade>
+
+      {/* Grid of options */}
       <View style={styles.grid}>
-        <AnimatedFade delay={300}>
-          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("AddWorkout")}>
-            <Text style={styles.cardText}>Add Workout</Text>
+
+        {/* Coaching */}
+        <AnimatedFade delay={350} style={{ width: "48%" }}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate("Coaching")}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.cardLabel}>Coaching</Text>
+            <Text style={styles.cardText}>Smart advice based on your training</Text>
           </TouchableOpacity>
         </AnimatedFade>
 
-        <AnimatedFade delay={400}>
-          <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("History")}>
-            <Text style={styles.cardText}>History</Text>
+        {/* History */}
+        <AnimatedFade delay={420} style={{ width: "48%" }}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate("History")}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.cardLabel}>History</Text>
+            <Text style={styles.cardText}>Your logged workouts</Text>
           </TouchableOpacity>
         </AnimatedFade>
 
-        <AnimatedFade delay={500}>
-          <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardText}>Profile</Text>
+        {/* Profile */}
+        <AnimatedFade delay={490} style={{ width: "48%" }}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate("Profile")}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.cardLabel}>Profile</Text>
+            <Text style={styles.cardText}>View/edit your account</Text>
           </TouchableOpacity>
         </AnimatedFade>
 
-        <AnimatedFade delay={600}>
-          <TouchableOpacity style={styles.card}>
-            <Text style={styles.cardText}>Coming Soon</Text>
+        {/* Placeholder for future feature */}
+        <AnimatedFade delay={560} style={{ width: "48%" }}>
+          <TouchableOpacity style={styles.card} activeOpacity={0.85}>
+            <Text style={styles.cardLabel}>Coming Soon</Text>
+            <Text style={styles.cardText}>More features ahead</Text>
           </TouchableOpacity>
         </AnimatedFade>
       </View>
 
-    </View>
+    </ScrollView>
   );
 }
 
@@ -74,16 +114,39 @@ const styles = StyleSheet.create({
     color: colors.textLight,
     fontSize: fonts.h1,
     fontWeight: "bold",
-    marginBottom: spacing.lg,
     textAlign: "center",
+    marginBottom: spacing.md,
   },
   heroImage: {
     width: "100%",
     height: 180,
     borderRadius: 14,
-    marginBottom: spacing.xl,
+    marginBottom: spacing.lg,
     borderWidth: 1,
     borderColor: colors.primaryDark,
+  },
+  subtitle: {
+    color: colors.textMuted,
+    fontSize: fonts.body,
+    textAlign: "center",
+    marginBottom: spacing.xl,
+  },
+  primaryButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.md + 4,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: spacing.lg,
+    shadowColor: colors.primary,
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  primaryButtonText: {
+    color: colors.textLight,
+    fontSize: fonts.h2,
+    fontWeight: "bold",
   },
   grid: {
     flexDirection: "row",
@@ -91,18 +154,23 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   card: {
-    width: "48%",
     backgroundColor: colors.card,
-    paddingVertical: spacing.xl,
     borderRadius: 12,
-    marginBottom: spacing.lg,
-    alignItems: "center",
+    padding: spacing.md,
     borderWidth: 1,
     borderColor: colors.primaryDark,
+    minHeight: 110,
+    justifyContent: "center",
+    marginBottom: spacing.lg,
   },
-  cardText: {
+  cardLabel: {
     color: colors.textLight,
     fontSize: fonts.h3,
     fontWeight: "bold",
+    marginBottom: spacing.xs,
+  },
+  cardText: {
+    color: colors.textMuted,
+    fontSize: fonts.small,
   },
 });
